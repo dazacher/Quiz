@@ -63,7 +63,11 @@ var button2 = document.querySelector("#btn2");
 var button3 = document.querySelector("#btn3");
 var button4 = document.querySelector("#btn4");
 var message = document.querySelector("#answerMessage");
-
+var brElement1 = document.querySelector("btn1");
+var brElement2 = document.querySelector("btn2");
+var brElement3 = document.querySelector("btn3");
+var brElement4 = document.querySelector("btn4");
+var h5Element = document.createElement("h5");
 var answerMessageParagraph = "";
 var questions
 var correctAnswer = "";
@@ -71,10 +75,12 @@ var chosenAnswer = "";
 var timerCount
 var currentQuestion = 0;
 var mode = "choices";
+var endOfGame = false;
+// clearInterval(timerInterval);
 function setTime() {
     console.log("In setTime function")
     var timerPar = document.getElementById("timer");
-    timerCount = 75;
+    timerCount = 60;
 
     timerPar.textContent = timerCount;
 
@@ -82,78 +88,90 @@ function setTime() {
         timerCount--;
         timerPar.textContent = timerCount;
         //   Executes when timer is done
-        if (timerCount === 0) {
+        if (timerCount === 0 || endOfGame === true) {
             clearInterval(timerInterval);
-            // sendMessage();
+            alert("Game is over!");
+            highScoresForm()
             // Plan to execute alert message that game is over here
         }
     }, 1000);
 }
 
+var count = 5;
 function questionTimer() {
     console.log("In questionTimer funstion")
-    var count = 5;
+    
     var timerInt = setTimeout(function () {
         count--;
         //   Executes when timer is done
-        if (count === 0) {
+        if (count = 0) {
+            console.log("Count is " + count)
+            console.log("In if statement of questionTimer")
+            timerCount = 0; 
+            // clearInterval(timerInterval);
             console.log("Game is over!");
+            console.log(timerCount);
             alert("Game is over!");
+            endOfGame = true;
+            highScoresForm(timerCount)
             clearTimeout(timerInt);
+        }else{
+            console.log("in else of questionTimer")
+            console.log(timerCount)
+            clearQuestions();
+            displayQuestions();
         }
-        clearQuestions();
-        displayQuestions();
-    }, 5000);
-    // clearQuestions();
-
+        if (timerCount === 0 || endOfGame === true){
+            clearInterval(timerInterval);
+            alert("Game is over!");
+            highScoresForm();
+        // if (timerCount ){};  
+    }, 2000);
 }
 
 function clearQuestions() {
     console.log("In clearQuestions function");
-    //questionRow.innerHTML = ""
-    //h5ElementQuestion.style.visibility = "hidden";
-    // button1.style.visibility = "hidden";
-    // button2.style.visibility = "hidden";
-    // button3.style.visibility = "hidden";
-    // button4.style.visibility = "hidden";
+
      h5ElementQuestion.textContent = "";
      button1.textContent = "";
      button2.textContent = "";
      button3.textContent = "";
      button4.textContent = "";
      message.textContent = "";
-
-
 }
 
-function highScoresForm(){};
+function highScoresForm(countTimer){
+    var countEndTime = countTimer;
+    console.log("In High Scores Function")
+    console.log(countEndTime);
+    clearQuestions();
+    h5ElementQuestion.textContent = "All Done!";
+    h5ElementQuestion.appendChild(h5Element);
+};
 
 function displayQuestions() {
     console.log("In displayQuestion function");
+    
     var quizTimer = document.getElementById("timer");
+    console.log(quizTimer);
     quizTimer.style.visibility = "visible"
         if(currentQuestion > 4){
             clearQuestions();
             highScoresForm();
         };
+
     questions = questionArr[currentQuestion];
     var h5Element = document.createElement("h5");
     var b1 = document.createElement("button");
+    var br1 = document.createElement("br");
     var b2 = document.createElement("button");
+    var br2 = document.createElement("br");
     var b3 = document.createElement("button");
+    var br3 = document.createElement("br");
     var b4 = document.createElement("button");
+    var br4 = document.createElement("br");
+    var brElement = document.createElement("br");
 
-    // button1.style.textAlign = "center"
-    // button2.style.textAlign = "center"
-    // button3.style.textAlign = "center"
-    // button4.style.textAlign = "center"
-
-    // button1.setAttribute.textAlign = "center"
-    // button1.setAttribute("text-align", "center");
-    button1.setAttribute("style", "text-align: center")
-    button2.setAttribute("style", "text-align: center")
-    button3.setAttribute("style", "text-align: center")
-    button4.setAttribute("style", "text-align: center")
     h5Element.textContent = questions.question;
     b1.textContent = questions.answer1;
     b2.textContent = questions.answer2;
@@ -164,21 +182,23 @@ function displayQuestions() {
 
     button1.setAttribute("class", "choices");
     button1.appendChild(b1);
+    button1.appendChild(br1);
     button1.addEventListener("click", checkAnswer1);
 
-    
     button2.setAttribute("class", "choices");
     button2.appendChild(b2);
+    button2.appendChild(br2);
     button2.addEventListener("click", checkAnswer2);
 
-    
     button3.setAttribute("class", "choices"); button3.appendChild(b3);
+    button3.appendChild(b3);
+    button3.appendChild(br3);
     button3.addEventListener("click", checkAnswer3);
-    
-  
+     
     button4.setAttribute("class", "choices");   button4.appendChild(b4);
-    button4.addEventListener("click", checkAnswer4);
-    
+    button4.appendChild(b4);
+    button4.appendChild(br4);
+    button4.addEventListener("click", checkAnswer4);  
 };
 
 function checkAnswer1(event) {
@@ -197,12 +217,13 @@ function checkAnswer1(event) {
         message = document.createElement("p");
         message.textContent = questions.incorrectAnswerResponse;
         answerMessage.append(message);
-
+        timerCount = timerCount - 10;
+    }
         currentQuestion++;
 
         // if statement checking iterator and end game function
         questionTimer();
-    }
+    
 }
 function checkAnswer2(event) {
     mode = questions.answer2.charAt(0);
@@ -217,6 +238,7 @@ function checkAnswer2(event) {
         message = document.createElement("p");
         message.textContent = questions.incorrectAnswerResponse;
         answerMessage.append(message);
+        timerCount = timerCount - 10;
     }
 
     currentQuestion++;
@@ -236,6 +258,7 @@ function checkAnswer3(event) {
         message = document.createElement("p");
         message.textContent = questions.incorrectAnswerResponse;
         answerMessage.append(message);
+        timerCount = timerCount - 10;
     }
 
     currentQuestion++;
@@ -255,46 +278,13 @@ function checkAnswer4(event) {
         message = document.createElement("p");
         message.textContent = questions.incorrectAnswerResponse;
         answerMessage.append(message);
+        timerCount = timerCount - 10;
     }
 
     currentQuestion++;
      // if statement checking iterator and end game function
      questionTimer();
 }
-
-
-// button1.addEventListener("click", function () {
-//     mode = questions.answer1.charAt(0);
-//     if (mode === questions.correctAnswer) {
-//         mode = questions.answer1.charAt(0);
-//         button1.setAttribute("class", questions.answer1.charAt(0));
-//         message = document.createElement("p");
-//         message.textContent = questions.correctAnswerResponse;
-//         answerMessage.append(message);
-//     } else if (mode !== correctAnswer) {
-//         mode = questions.answer1.charAt(0);
-//         button1.setAttribute("class", questions.answer1.charAt(0));
-//         message = document.createElement("p");
-//         message.textContent = questions.incorrectAnswerResponse;
-//         answerMessage.append(message);
-//     };
-// });
-// button2.addEventListener("click", function () {
-//     mode = questions.answer2.charAt(0);
-//     if (mode === questions.correctAnswer) {
-//         button2.setAttribute("class", questions.answer2.charAt(0));
-//         message = document.createElement("p");
-//         message.textContent = questions.correctAnswerResponse;
-//         answerMessage.append(message);
-//     } else if (mode !== correctAnswer) {
-//         mode = questions.answer2.charAt(0);
-//         button2.setAttribute("class", questions.answer2.charAt(0));
-//         message = document.createElement("p");
-//         message.textContent = questions.incorrectAnswerResponse;
-//         answerMessage.append(message);
-//     };
-// });
-
 
 
 var startButton = document.getElementById("startButton");
