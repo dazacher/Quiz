@@ -18,7 +18,7 @@ var questionArr = [{
     question: "Yorkies were bred to be ___________.",
     answer1: "a. Lap dogs",
     answer2: "b. Scare elephants into submission",
-    answer3: "c. Rat humters",
+    answer3: "c. Rat hunters",
     answer4: "d. Ankle biters",
     correctAnswer: "c",
     correctAnswerResponse: "Correct! Awesome job!",
@@ -72,26 +72,30 @@ var answerMessageParagraph = "";
 var questions
 var correctAnswer = "";
 var chosenAnswer = "";
-var timerCount
+var timerCount = 60;
 var currentQuestion = 0;
 var mode = "choices";
 var endOfGame = false;
+var timeInterval;
 // clearInterval(timerInterval);
 function setTime() {
-    console.log("In setTime function")
+    console.log("In setTime function");
     var timerPar = document.getElementById("timer");
-    timerCount = 60;
+    // timerCount = 60;
 
     timerPar.textContent = timerCount;
 
-    var timerInterval = setInterval(function () {
+    timerInterval = setInterval(function () {
         timerCount--;
         timerPar.textContent = timerCount;
         //   Executes when timer is done
-        if (timerCount === 0 || endOfGame === true) {
+        if (timerCount < 1 || endOfGame === true) {
             clearInterval(timerInterval);
+            if(timerCount < 0){
+                timerCount = 0;
+                timerPar.textContent = timerCount;
+            };
             alert("Game is over!");
-            highScoresForm()
             // Plan to execute alert message that game is over here
         }
     }, 1000);
@@ -99,34 +103,33 @@ function setTime() {
 
 var count = 5;
 function questionTimer() {
-    console.log("In questionTimer funstion")
+    console.log("In questionTimer function");
     
     var timerInt = setTimeout(function () {
-        count--;
+        
         //   Executes when timer is done
-        if (count = 0) {
-            console.log("Count is " + count)
-            console.log("In if statement of questionTimer")
-            timerCount = 0; 
-            // clearInterval(timerInterval);
-            console.log("Game is over!");
-            console.log(timerCount);
-            alert("Game is over!");
+        if (count === 0) {
+            console.log("Count is " + count);
+            console.log("In if statement of questionTimer");
+            timerCount = 0;
+            console.log(" If Statement Game is over!");
+            console.log("TimerCount is " + timerCount);
             endOfGame = true;
-            highScoresForm(timerCount)
             clearTimeout(timerInt);
         }else{
-            console.log("in else of questionTimer")
-            console.log(timerCount)
+            console.log("in else of questionTimer");
+            console.log(timerCount);
             clearQuestions();
             displayQuestions();
         }
-        if (timerCount === 0 || endOfGame === true){
+        if (endOfGame === true){
+            console.log("End of Game If statement")
             clearInterval(timerInterval);
             alert("Game is over!");
-            highScoresForm();
-        // if (timerCount ){};  
-    }, 2000);
+            endGameForm();  
+        }
+        count--;
+    }, 1500);
 }
 
 function clearQuestions() {
@@ -139,16 +142,79 @@ function clearQuestions() {
      button4.textContent = "";
      message.textContent = "";
 }
-
-function highScoresForm(countTimer){
-    var countEndTime = countTimer;
+var userObj;
+var inputBoxInitials;
+function endGameForm(){
+    // var countEndTime = countTimer;
     console.log("In High Scores Function")
-    console.log(countEndTime);
+    console.log("countEndTime " + timerCount);
     clearQuestions();
-    h5ElementQuestion.textContent = "All Done!";
-    h5ElementQuestion.appendChild(h5Element);
+    var h5ElementEG = document.querySelector("#questionH5");
+    var h5ElementEndGame = document.createElement("h4");
+    h5ElementEndGame.textContent = "All Done!";
+    h5ElementEG.appendChild(h5ElementEndGame);
+    
+    var highScoreMsg = document.querySelector("#highScoreMessage");
+    var highScoreMsgParagraph = document.createElement("h5");
+    highScoreMsgParagraph.textContent = "High score: " + timerCount;
+    highScoreMsg.appendChild(highScoreMsgParagraph);
+    
+    var initialsParMsg = document.querySelector("#inputInitials");
+    var initialsPar = document.createElement("h5");
+    initialsPar.textContent = "Enter Initials Here: ";
+    initialsParMsg.appendChild(initialsPar);
+    
+    var initials = document.querySelector("#inputInitials");
+    var inputBoxInitials = document.createElement("input");
+    inputBoxInitials.setAttribute("id", "userInputInitials")
+    initials.appendChild(inputBoxInitials);
+    
+    var submitInputBtn = document.querySelector("#inputInitials");
+    var submitButton = document.createElement("button");
+    submitButton.textContent = "Submit";
+    submitInputBtn.appendChild(submitButton);
+    
+    submitButton.addEventListener("click", function (event) {
+
+        console.log("SubmitButton pushed");
+        // var initialsEntered = document.querySelector("#userInputInitials");
+        userObj = {
+            initials: inputBoxInitials.value,
+            highScore: timerCount
+        };
+// Store the user oject with initials and high score into local storeage 
+        localStorage.setItem(userObj, JSON.stringify(userObj));
+ 
+        // Clear the page for the next page to be built
+        inputBoxInitials.value = "";
+        submitInputBtn.remove();
+        initialsParMsg.textContent = "";
+        highScoreMsg.textContent = "";
+        h5ElementEndGame.textContent = "";
+    
+        highScores();
+    }) 
 };
 
+function highScores(){
+    var h5ElementEG = document.querySelector("#questionH5");
+    var h5ElementEndGame = document.createElement("h4");
+    h5ElementEndGame.textContent = "High Scores";
+    h5ElementEG.appendChild(h5ElementEndGame);
+// get high score out of local storage
+    userObj = localStorage.getItem("userObj");
+// parse the data back into an object
+    var userObj = JSON.parse(userObj);
+// Build the display high scores page
+    var divHighScores = document.querySelector("#displayHighScores");
+    var h5HighScores = document.createElement("h5");
+    h5HighScores.textContent = userObj.initials + " " + userObj.highScore;
+    divHighScores.appendChild(h5HighScores);
+
+
+
+
+};
 function displayQuestions() {
     console.log("In displayQuestion function");
     
@@ -157,19 +223,21 @@ function displayQuestions() {
     quizTimer.style.visibility = "visible"
         if(currentQuestion > 4){
             clearQuestions();
-            highScoresForm();
+            endGameForm();
+            clearInterval(timerInterval);
+            console.log("display high score " + quizTimer)
         };
 
     questions = questionArr[currentQuestion];
     var h5Element = document.createElement("h5");
     var b1 = document.createElement("button");
-    var br1 = document.createElement("br");
+    // var br1 = document.createElement("br");
     var b2 = document.createElement("button");
-    var br2 = document.createElement("br");
+    // var br2 = document.createElement("br");
     var b3 = document.createElement("button");
-    var br3 = document.createElement("br");
+    // var br3 = document.createElement("br");
     var b4 = document.createElement("button");
-    var br4 = document.createElement("br");
+    // var br4 = document.createElement("br");
     var brElement = document.createElement("br");
 
     h5Element.textContent = questions.question;
@@ -182,22 +250,22 @@ function displayQuestions() {
 
     button1.setAttribute("class", "choices");
     button1.appendChild(b1);
-    button1.appendChild(br1);
+    // button1.appendChild(br1);
     button1.addEventListener("click", checkAnswer1);
 
     button2.setAttribute("class", "choices");
     button2.appendChild(b2);
-    button2.appendChild(br2);
+    // button2.appendChild(br2);
     button2.addEventListener("click", checkAnswer2);
 
     button3.setAttribute("class", "choices"); button3.appendChild(b3);
     button3.appendChild(b3);
-    button3.appendChild(br3);
+    // button3.appendChild(br3);
     button3.addEventListener("click", checkAnswer3);
      
     button4.setAttribute("class", "choices");   button4.appendChild(b4);
     button4.appendChild(b4);
-    button4.appendChild(br4);
+    // button4.appendChild(br4);
     button4.addEventListener("click", checkAnswer4);  
 };
 
@@ -217,7 +285,12 @@ function checkAnswer1(event) {
         message = document.createElement("p");
         message.textContent = questions.incorrectAnswerResponse;
         answerMessage.append(message);
-        timerCount = timerCount - 10;
+        if(timerCount <= 10){
+            timerCount = 0;
+        }else{
+            timerCount = timerCount - 10;
+        };
+        
     }
         currentQuestion++;
 
