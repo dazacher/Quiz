@@ -183,7 +183,7 @@ function endGameForm(){
             highScore: timerCount
         };
 // Store the user oject with initials and high score into local storeage 
-        localStorage.setItem(userObj, JSON.stringify(userObj));
+        localStorage.setItem("userObj", JSON.stringify(userObj));
  
         // Clear the page for the next page to be built
         inputBoxInitials.value = "";
@@ -191,12 +191,13 @@ function endGameForm(){
         initialsParMsg.textContent = "";
         highScoreMsg.textContent = "";
         h5ElementEndGame.textContent = "";
-    
+    // Call high scores page to be loaded
         highScores();
     }) 
 };
 
 function highScores(){
+    // Build high scores page
     var h5ElementEG = document.querySelector("#questionH5");
     var h5ElementEndGame = document.createElement("h4");
     h5ElementEndGame.textContent = "High Scores";
@@ -205,12 +206,39 @@ function highScores(){
     userObj = localStorage.getItem("userObj");
 // parse the data back into an object
     var userObj = JSON.parse(userObj);
-// Build the display high scores page
+    console.log("UserObject " + userObj);
+
     var divHighScores = document.querySelector("#displayHighScores");
     var h5HighScores = document.createElement("h5");
-    h5HighScores.textContent = userObj.initials + " " + userObj.highScore;
+    console.log(userObj.initials);
+    h5HighScores.textContent = "1. " + userObj.initials + " " + userObj.highScore;
     divHighScores.appendChild(h5HighScores);
+// Clear high scores button
+    var clearBtn = document.querySelector("#displayHighScores");
+    var clearButton = document.createElement("button");
+    clearButton.textContent = "Clear High Scores";
+    clearBtn.appendChild(clearButton);
 
+    clearButton.addEventListener("click", function (event) {
+        localStorage.clear();
+        // get high score out of local storage
+    userObj = localStorage.getItem("userObj");
+    // parse the data back into an object
+        var userObj = JSON.parse(userObj);
+        // h5HighScores.textContent = "1. " + userObj.initials + " " + userObj.highScore;
+        h5HighScores.textContent = "";
+        h5ElementEndGame.textContent = "";
+    });
+// return to Quiz button
+    var returnBtn = document.querySelector("#displayHighScores");
+    var returnButton = document.createElement("button");
+    returnButton.textContent = "Return Home";
+    returnBtn.appendChild(returnButton);
+
+    returnButton.addEventListener("click", function (event) {
+        location.reload(true);
+        
+    });
 
 
 
