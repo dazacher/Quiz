@@ -289,19 +289,24 @@ function displayQuestions() {
     h5ElementQuestion.appendChild(h5Element);
 
     button1.setAttribute("class", "choices");
+    
     button1.appendChild(b1);
+    b1.setAttribute("id", "button1")
     button1.addEventListener("click", checkAnswer1);
 
     button2.setAttribute("class", "choices");
     button2.appendChild(b2);
+    b2.setAttribute("id", "button2")
     button2.addEventListener("click", checkAnswer2);
 
     button3.setAttribute("class", "choices"); button3.appendChild(b3);
     button3.appendChild(b3);
+    b3.setAttribute("id", "button3")
     button3.addEventListener("click", checkAnswer3);
 
     button4.setAttribute("class", "choices"); button4.appendChild(b4);
     button4.appendChild(b4);
+    b4.setAttribute("id", "button4")
     button4.addEventListener("click", checkAnswer4);
 };
 
