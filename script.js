@@ -76,6 +76,13 @@ var endOfGame = false;
 var timeInterval;
 var userObj;
 var inputBoxInitials;
+// creat an empty array if an array does not already exist
+localStorage.getItem("userHighScores");
+let userHighScores = JSON.parse(localStorage.getItem("userHighScores"));
+if (!userHighScores) {
+    userHighScores = [];
+};
+console.log(userHighScores);
 
 function setTime() {
     console.log("In setTime function");
@@ -170,6 +177,12 @@ function endGameForm() {
     submitInputBtn.appendChild(submitButton);
 
     submitButton.addEventListener("click", function (event) {
+        localStorage.getItem("userHighScores");
+        let userHighScores = JSON.parse(localStorage.getItem("userHighScores"));
+        if (!userHighScores) {
+            userHighScores = [];
+        };
+        console.log(userHighScores);
 
         console.log("SubmitButton pushed");
         userObj = {
@@ -177,8 +190,12 @@ function endGameForm() {
             highScore: timerCount
         };
         // Store the user oject with initials and high score into local storeage 
-        localStorage.setItem("userObj", JSON.stringify(userObj));
-
+        userHighScores.push(userObj);
+        let sortedHighScores = userHighScores.sort(function (a, b) {
+            return (b.highScore - a.highScore);
+        })
+        localStorage.setItem("userHighScores", JSON.stringify(sortedHighScores));
+        console.log(sortedHighScores);
         // Clear the page for the next page to be built
         inputBoxInitials.value = "";
         submitInputBtn.remove();
@@ -191,6 +208,7 @@ function endGameForm() {
 };
 
 viewHighScores.addEventListener("click", function (event) {
+
     highScores();
 });
 
@@ -214,21 +232,27 @@ function clearDisplay() {
 function highScores() {
     // Build high scores page
     // clearDisplay();
+
     var h5ElementEG = document.querySelector("#questionH5");
     var h5ElementEndGame = document.createElement("h4");
     h5ElementEndGame.textContent = "High Scores";
     h5ElementEG.appendChild(h5ElementEndGame);
     // get high score out of local storage
-    userObj = localStorage.getItem("userObj");
-    // parse the data back into an object
-    var userObj = JSON.parse(userObj);
-    console.log("UserObject " + userObj);
 
+    userHighScores = JSON.parse(localStorage.getItem("userHighScores"));
     var divHighScores = document.querySelector("#displayHighScores");
-    var h5HighScores = document.createElement("h5");
-    console.log(userObj.initials);
-    h5HighScores.textContent = "1. " + userObj.initials + " " + userObj.highScore;
-    divHighScores.appendChild(h5HighScores);
+    for (j = 0; j < userHighScores.length; j++) {
+        var h5HighScores = document.createElement("h5");
+        h5HighScores.textContent = j + 1 + " " + userHighScores[j].initials + " " + userHighScores[j].highScore;
+        divHighScores.appendChild(h5HighScores);
+    };
+    // parse the data back into an object
+    // var userHighScores = JSON.parse(userHighScores);
+    console.log("userHighScores " + userHighScores);
+    // display high scores onto page
+    // var divHighScores = document.querySelector("#displayHighScores");
+
+
     // Clear high scores button
     var clearBtn = document.querySelector("#displayHighScores");
     var clearButton = document.createElement("button");
@@ -238,16 +262,18 @@ function highScores() {
     clearButton.addEventListener("click", function (event) {
         localStorage.clear();
         // get high score out of local storage
-        userObj = localStorage.getItem("userObj");
+        // userHighScores = localStorage.getItem("userHighScores");
         // parse the data back into an object
-        var userObj = JSON.parse(userObj);
+        // var userHighScores = JSON.parse(userHighScores);
         h5HighScores.textContent = "";
         h5ElementEndGame.textContent = "";
 
-        inputBoxInitials.value = "";
-        submitInputBtn.remove();
-        initialsParMsg.textContent = "";
-        highScoreMsg.textContent = "";
+        // inputBoxInitials.value = "";
+        // submitInputBtn.remove();
+        // initialsParMsg.textContent = "";
+        // highScoreMsg.textContent = "";
+        divDisplayHighScores = document.querySelector("#displayHighScores");
+        divDisplayHighScores.style.visibility = "hidden";
 
     });
     // return to Quiz button
@@ -289,7 +315,7 @@ function displayQuestions() {
     h5ElementQuestion.appendChild(h5Element);
 
     button1.setAttribute("class", "choices");
-    
+
     button1.appendChild(b1);
     b1.setAttribute("id", "button1")
     button1.addEventListener("click", checkAnswer1);
