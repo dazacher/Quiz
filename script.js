@@ -254,7 +254,8 @@ function highScores() {
 
 
     // Clear high scores button
-    var clearBtn = document.querySelector("#displayHighScores");
+    clearAndHomeButton
+    var clearBtn = document.querySelector("#clearAndHomeButton");
     var clearButton = document.createElement("button");
     clearButton.textContent = "Clear High Scores";
     clearBtn.appendChild(clearButton);
@@ -268,16 +269,12 @@ function highScores() {
         h5HighScores.textContent = "";
         h5ElementEndGame.textContent = "";
 
-        // inputBoxInitials.value = "";
-        // submitInputBtn.remove();
-        // initialsParMsg.textContent = "";
-        // highScoreMsg.textContent = "";
         divDisplayHighScores = document.querySelector("#displayHighScores");
         divDisplayHighScores.style.visibility = "hidden";
 
     });
     // return to Quiz button
-    var returnBtn = document.querySelector("#displayHighScores");
+    var returnBtn = document.querySelector("#clearAndHomeButton");
     var returnButton = document.createElement("button");
     returnButton.textContent = "Return Home";
     returnBtn.appendChild(returnButton);
